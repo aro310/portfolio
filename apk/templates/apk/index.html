@@ -1,0 +1,1129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Aroniaina Fortunat</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-color: #081b29;
+            --second-bg-color: #112e42;
+            --text-color: #ededed;
+            --main-color: #00abf0;
+            --card-bg: rgba(17, 46, 66, 0.6); /* Fond semi-transparent pour les cartes */
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            border: none;
+            outline: none;
+            scroll-behavior: smooth;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* --- FOND ANIMÉ GLOBAL --- */
+        body {
+            /* Le gradient est appliqué au body et visible partout */
+            background: linear-gradient(-45deg, #081b29, #112e42, #02101a, #003554);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Canvas de particules (Fixe sur tout le site) */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Derrière tout le contenu */
+            pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 9%;
+            background: rgba(8, 27, 41, 0.7); /* Plus transparent */
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            transition: 0.4s;
+            border-bottom: 1px solid rgba(0, 171, 240, 0.1);
+        }
+        .header.sticky {
+            background: rgba(8, 27, 41, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 171, 240, 0.3);
+            padding: 1.2rem 9%;
+        }
+        .logo {
+            font-size: 2.5rem;
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0;
+            animation: slideRight 1s ease forwards;
+        }
+        .navbar a {
+            position: relative;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-left: 3.5rem;
+            font-weight: 500;
+            transition: .3s;
+            opacity: 0;
+            animation: slideTop .5s ease forwards;
+            animation-delay: calc(.2s * var(--i));
+            display: inline-block;
+        }
+        .navbar a:hover, .navbar a.active {
+            color: var(--main-color);
+            text-shadow: 0 0 15px var(--main-color);
+        }
+        
+        /* --- SECTIONS GÉNÉRALES --- */
+        section {
+            padding: 8rem 9% 4rem; /* Padding augmenté pour l'aération */
+            min-height: 100vh;
+            /* Pas de background ici pour laisser voir le body */
+        }
+
+        /* --- HERO SECTION --- */
+        .home {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .home-content {
+            max-width: 650px;
+            z-index: 2; /* Au dessus des particules */
+        }
+        .home-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+            opacity: 0;
+            animation: slideRight 1s ease forwards;
+            animation-delay: .7s;
+        }
+        .home-content h1 span {
+            color: var(--main-color);
+        }
+        .text-animate h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--main-color);
+            opacity: 0;
+            animation: slideTop 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+        .text-animate h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            opacity: 0;
+            animation: slideTop 1s ease forwards;
+            animation-delay: 1.8s;
+        }
+        .cursor {
+            animation: blink 0.8s infinite;
+            color: var(--main-color);
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .home-content p {
+            font-size: 1.1rem;
+            margin: 2rem 0 3rem;
+            opacity: 0;
+            animation: slideLeft 1s ease forwards;
+            animation-delay: 1s;
+        }
+
+        /* Boutons */
+        .btn-box {
+            position: relative;
+            display: flex;
+            gap: 1.5rem;
+            height: 50px;
+        }
+        .btn-box .btn {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 160px;
+            height: 100%;
+            background: var(--main-color);
+            border: 2px solid var(--main-color);
+            border-radius: 8px;
+            font-size: 1.2rem;
+            color: #081b29;
+            font-weight: 600;
+            letter-spacing: 1px;
+            z-index: 1;
+            overflow: hidden;
+            transition: .5s;
+            box-shadow: 0 0 20px var(--main-color);
+            opacity: 0;
+            animation: slideTop 1s ease forwards;
+            animation-delay: 1.3s;
+        }
+        .btn-box .btn:hover {
+            color: var(--main-color);
+            background: transparent;
+            box-shadow: 0 0 10px var(--main-color);
+        }
+        
+        /* Icônes sociaux */
+        .home-sci {
+            position: absolute;
+            bottom: 40px;
+            width: 200px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .home-sci a {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 2px solid var(--main-color);
+            border-radius: 50%;
+            font-size: 20px;
+            color: var(--main-color);
+            z-index: 1;
+            overflow: hidden;
+            transition: .5s;
+            opacity: 0;
+            animation: slideTop 1s ease forwards;
+            animation-delay: calc(.2s * var(--i));
+        }
+        .home-sci a:hover {
+            background: var(--main-color);
+            color: #081b29;
+            box-shadow: 0 0 25px var(--main-color);
+            transform: scale(1.2);
+        }
+
+        /* Image profil */
+        .home-imgHover {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            width: 400px;
+            height: 400px;
+            background: transparent;
+            border: 2px solid var(--main-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: zoomIn 1s ease forwards, floatImage 4s ease-in-out infinite, pulseShadow 5s ease-in-out infinite;
+            animation-delay: 1.5s, 2.5s, 2.5s;
+            box-shadow: 0 0 25px var(--main-color), inset 0 0 25px var(--main-color);
+        }
+        .home-imgHover::before,
+        .home-imgHover::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid var(--main-color);
+            box-shadow: 0 0 30px var(--main-color);
+        }
+        .home-imgHover::before {
+            width: 460px;
+            height: 460px;
+            animation: rotateRing 25s linear infinite;
+            opacity: 0.4;
+        }
+        .home-imgHover::after {
+            width: 520px;
+            height: 520px;
+            animation: rotateRing 35s linear infinite reverse;
+            opacity: 0.2;
+        }
+        .home-imgHover img {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- STATS (Glassmorphism) --- */
+        .stats-section {
+            display: flex;
+            justify-content: space-around;
+            /* Fond transparent style verre */
+            background: rgba(17, 46, 66, 0.5); 
+            backdrop-filter: blur(10px);
+            padding: 40px 9%;
+            border-top: 1px solid rgba(0, 171, 240, 0.5);
+            border-bottom: 1px solid rgba(0, 171, 240, 0.5);
+            box-shadow: 0 0 30px rgba(0, 171, 240, 0.1);
+            margin-bottom: 2rem;
+        }
+        .stat-item {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .stat-item h2 {
+            font-size: 2.8rem;
+            color: var(--main-color);
+            font-weight: 700;
+        }
+        .home {
+    position: relative;
+}
+
+
+        /* --- ABOUT & HEADINGS --- */
+        .heading {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.8s;
+            text-shadow: 0 0 10px rgba(0, 171, 240, 0.5);
+        }
+        .heading span { color: var(--main-color); }
+
+        .about-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 171, 240, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 0.8s;
+        }
+
+        /* --- SKILLS --- */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .skill-card {
+            background: var(--card-bg); /* Glassmorphism */
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 171, 240, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: 0.8s;
+        }
+        .skill-card:hover {
+            border-color: var(--main-color);
+            transform: translateY(-5px) !important;
+            box-shadow: 0 0 20px rgba(0, 171, 240, 0.3);
+        }
+        .skill-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--main-color);
+        }
+        .skill-card li {
+            list-style: none;
+            margin: 0.8rem 0;
+            padding: 0.5rem;
+            background: rgba(0, 171, 240, 0.05);
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .skill-card li:hover {
+            background: rgba(0, 171, 240, 0.3);
+            transform: translateX(10px);
+        }
+
+        /* --- PROJETS (AVEC ANIMATION D'IMAGES) --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .project-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 171, 240, 0.1);
+            overflow: hidden; /* Important pour que les images ne dépassent pas */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            border-color: var(--main-color);
+            transform: scale(1.02) !important;
+            box-shadow: 0 0 25px rgba(0, 171, 240, 0.2);
+        }
+
+        /* Texte des projets */
+        .project-desc {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #cfd8dc;
+            margin-top: 1rem;
+            position: relative;
+            padding-left: 1.2rem;
+            border-left: 2px solid rgba(0, 238, 255, 0.4);
+            animation: fadeUp 1s ease forwards;
+        }
+
+        /* Mise en valeur des mots clés */
+        .project-desc .highlight {
+            color: var(--main-color);
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 238, 255, 0.4);
+        }
+
+        /* Style pour technologies */
+        .project-desc .tech {
+            color: #ffffff;
+            background: rgba(0, 238, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 0 2px;
+        }
+
+        /* Animation subtile */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        /* CONTAINER DU SLIDER D'IMAGES */
+        .card-image-slider {
+            width: 100%;
+            height: 180px; /* Hauteur de la zone image */
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 171, 240, 0.2);
+        }
+
+        /* BANDE D'IMAGES QUI DÉFILE */
+        .image-track {
+            display: flex;
+            width: calc(300px * 4); /* Largeur suffisante pour les images */
+            animation: scrollImages 15s linear infinite;
+        }
+
+        .image-track img {
+            width: 100%; /* Adapte à la largeur du parent */
+            min-width: 320px; /* Force une largeur minimale */
+            height: 180px;
+            object-fit: cover;
+            /* Filtre pour uniformiser les images */
+            filter: brightness(0.8); 
+        }
+
+        /* Animation de défilement infini */
+        @keyframes scrollImages {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Déplace de moitié si images dupliquées */
+        }
+
+        /* CONTENU TEXTE DE LA CARTE */
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-card h3 {
+            color: var(--main-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+        
+        .project-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        /* --- CONTACT --- */
+        .contact-info {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 171, 240, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .contact-info p { margin: 1.5rem 0; font-size: 1.2rem; }
+        .contact-info i { color: var(--main-color); margin-right: 10px; font-size: 1.5rem; vertical-align: middle; }
+        .contact-info a { color: #fff; transition: 0.3s; }
+        .contact-info a:hover { color: var(--main-color); }
+
+        /* --- ANIMATIONS CLÉS --- */
+        @keyframes slideRight { 0% { transform: translateX(-100px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes slideLeft { 0% { transform: translateX(100px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+        @keyframes slideTop { 0% { transform: translateY(100px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes zoomIn { 0% { transform: translateY(-50%) scale(0); opacity: 0; } 100% { transform: translateY(-50%) scale(1); opacity: 1; } }
+        @keyframes floatImage { 0% { transform: translateY(-50%); } 50% { transform: translateY(-45%); } 100% { transform: translateY(-50%); } }
+        
+        .show-animate {
+            opacity: 1 !important;
+            transform: translate(0) scale(1) !important;
+        }
+        /* --- MEDIA QUERIES (RESPONSIVE DESIGN) --- */
+
+        /* 1. TABLETTES & PETITS ORDINATEURS (max-width: 1024px) */
+        @media (max-width: 1024px) {
+            .header {
+                padding: 2rem 4%;
+            }
+
+            section {
+                padding: 10rem 4% 2rem;
+            }
+
+            .home {
+                padding: 0 4%;
+            }
+
+            .home-imgHover::before,
+            .home-imgHover::after {
+                /* On réduit les anneaux décoratifs pour éviter le débordement */
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                /* Ajustement pour centrer les anneaux réduits */
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); 
+                animation: none; /* Optionnel : désactiver l'animation complexe sur tablette pour la perf */
+            }
+        }
+
+        /* 2. TABLETTES & MOBILES LARGES (max-width: 768px) */
+        @media (max-width: 768px) {
+            /* Ajustement global de la taille des polices (facilite la mise à l'échelle) */
+            html {
+                font-size: 80%; 
+            }
+
+            section {
+        min-height: auto;
+        padding-top: 6rem;
+        padding-bottom: 4rem;
+    }
+
+            /* Le menu de navigation (Navbar) */
+            /* Note : Pour un vrai menu burger, il faudra du JavaScript. 
+            Ici, on ajuste pour que ça ne casse pas le layout */
+            .header {
+                background: var(--bg-color); /* Fond uni pour lisibilité */
+                flex-direction: column; /* Empile le logo et le menu */
+                padding: 1rem 4%;
+                height: auto;
+            }
+
+            .navbar {
+                margin-top: 1rem;
+                display: flex;
+                flex-wrap: wrap; /* Permet aux liens de passer à la ligne */
+                justify-content: center;
+            }
+            
+            .navbar a {
+                margin: 0.5rem 1rem; /* Espacement réduit */
+                display: block;
+                font-size: 1.4rem;
+            }
+
+            /* Section Hero (Accueil) */
+            
+            .home {
+                flex-direction: column; /* Empile le texte et l'image */
+                justify-content: center;
+                text-align: center;
+                margin-top: 5rem;
+            }
+
+            .home-content {
+                max-width: 100%;
+                margin-bottom: 3rem;
+            }
+
+            .home-content h1 {
+                font-size: 4rem; /* Légèrement plus petit */
+            }
+
+            .home-content h3 {
+                font-size: 2.2rem;
+            }
+
+            /* Gestion de l'Image de profil (Annuler la position absolute) */
+            .home-imgHover {
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+
+        width: 240px;
+        height: 240px;
+
+        margin: 2rem auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .home-imgHover img {
+        width: 100%;
+        height: 100%;
+    }
+
+            /* Réajustement des anneaux animés pour le mobile */
+            .home-imgHover::before {
+        width: 280px;
+        height: 280px;
+    }            
+    .home-imgHover::after {
+        width: 320px;
+        height: 320px;
+    }
+            /* Boutons et Réseaux sociaux centrés */
+            .btn-box {
+                justify-content: center;
+                margin: 2rem auto;
+            }
+
+            .home-sci {
+                position: relative;
+                bottom: initial;
+                width: 100%;
+                justify-content: center;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+        }
+
+        /* 3. SMARTPHONES (max-width: 450px) */
+        @media (max-width: 450px) {
+            html {
+                font-size: 70%; /* Réduit encore un peu le texte global */
+            }
+                body {
+        padding-top: 110px; /* hauteur approximative du header */
+    }
+
+            .header {
+                padding: 1rem 3%;
+            }
+
+            .home-content h1 {
+                font-size: 3.2rem;
+            }
+
+            .btn-box {
+                flex-direction: column; /* Empile les boutons */
+                height: auto;
+                gap: 1rem;
+            }
+            
+            .btn-box .btn {
+                width: 100%; /* Boutons pleine largeur */
+                height: 50px;
+            }
+
+            .home-imgHover {
+    position: relative;      /* 🔥 clé du problème */
+    top: auto;
+    right: auto;
+    transform: none;
+
+    width: 220px;
+    height: 220px;
+
+    margin: 2rem auto;       /* centre horizontalement */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+}
+.home-imgHover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+
+
+            
+            /* Ajustement des anneaux pour très petits écrans */
+            .home-imgHover::before {
+    width: 260px;
+    height: 260px;
+    opacity: 0.25;
+
+}
+
+.home-imgHover::after {
+    width: 300px;
+    height: 300px;
+    opacity: 0.15;
+
+}
+
+            /* Grilles de projets et compétences */
+            .project-grid, .skills-container {
+                grid-template-columns: 1fr; /* Une seule colonne */
+            }
+            
+            .stats-section {
+                flex-direction: column;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+
+    <header class="header">
+        <a href="#" class="logo">Portfolio</a>
+        <nav class="navbar">
+            <a href="#home" class="active" style="--i:1;">Accueil</a>
+            <a href="#about" style="--i:2;">À Propos</a>
+            <a href="#skills" style="--i:3;">Compétences</a>
+            <a href="#portfolio" style="--i:4;">Projets</a>
+            <a href="#contact" style="--i:5;">Contact</a>
+        </nav>
+    </header>
+
+    <section class="home" id="home">
+        <div class="home-content">
+            <h1>Bonjour, je suis <span>Aro Fortunat</span></h1>
+            <div class="text-animate">
+                <h3><span id="typed"></span><span class="cursor">|</span></h3>
+                <h4>Passionné d'Intelligence Artificielle</h4>
+            </div>
+            <p>Étudiant en intégration et développement logiciel (IDEV) à l'ESTI. Je transforme des concepts complexes en solutions logicielles élégantes, avec un focus particulier sur le Machine Learning et le Web.</p>
+            
+            <div class="btn-box">
+                <a href="https://github.com/aro310" target="_blank" class="btn">GitHub</a>
+                <a href="#contact" class="btn">Me Contacter</a>
+                <a href="{% static 'apk/pdf/Aroniaina_IDEV.pdf' %}" class="btn">Voir mon CV</a>
+            </div>
+            <div class="home-sci">
+                <a href="https://github.com/aro310" target="_blank" style="--i:7;"><i class='bx bxl-github'></i></a>
+                <a href="mailto:aroratovoharison@gmail.com" style="--i:8;"><i class='bx bx-envelope'></i></a>
+                <a href="tel:+261345412584" style="--i:9;"><i class='bx bx-phone'></i></a>
+            </div>
+        </div>
+        <div class="home-imgHover">
+            <img src="{% static 'apk/images/aro.jpg' %}" alt="Photo de profil">
+        </div>
+    </section>
+
+    <div class="stats-section reveal-on-scroll">
+        <div class="stat-item">
+            <h2><span class="counter" data-target="2">0</span>+</h2>
+            <p>Années d'Expérience</p>
+        </div>
+        <div class="stat-item">
+            <h2><span class="counter" data-target="10">0</span>+</h2>
+            <p>Projets Réalisés</p>
+        </div>
+        <div class="stat-item">
+            <h2><span class="counter" data-target="15">0</span>+</h2>
+            <p>Technos Maîtrisées</p>
+        </div>
+    </div>
+
+    <section class="about" id="about">
+        <h2 class="heading reveal-on-scroll">À <span>Propos</span> de Moi</h2>
+        <div class="about-content reveal-on-scroll">
+            <p style="font-size: 1.1rem; line-height: 1.8; text-align: center;">
+                Je suis un développeur passionné par l'intersection entre le développement web et l'intelligence artificielle.
+                Mon parcours à l'ESTI me permet de solidifier mes bases techniques, mais c'est ma curiosité qui me pousse à toutjours explorer de nouveaux horizons comme le Deep Learning.
+                <br><br>
+                <strong>Pourquoi moi ?</strong> Parce que je ne me contente pas de coder, je cherche à comprendre le "pourquoi" derrière chaque ligne pour optimiser performance et expérience utilisateur.
+            </p>
+        </div>
+    </section>
+
+    <section class="skills" id="skills">
+        <h2 class="heading reveal-on-scroll">Mes <span>Compétences</span></h2>
+        <div class="skills-container reveal-on-scroll">
+            <div class="skill-card show-animate">
+                <h3><i class='bx bx-code-alt'></i> Langages</h3>
+                <ul>
+                    <li>Python (Avancé)</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>PHP / C</li>
+                    <li>SQL</li>
+                </ul>
+            </div>
+            <div class="skill-card show-animate">
+                <h3><i class='bx bx-layer'></i> Frameworks</h3>
+                <ul>
+                    <li>Django & Flask</li>
+                    <li>React.js</li>
+                    <li>FastAPI</li>
+                    <li>Qt / Tkinter</li>
+                </ul>
+            </div>
+            <div class="skill-card show-animate">
+                <h3><i class='bx bx-brain'></i> IA & Data</h3>
+                <ul>
+                    <li>Machine Learning</li>
+                    <li>TensorFlow / PyTorch</li>
+                    <li>Pandas / NumPy</li>
+                    <li>Data Analysis</li>
+                </ul>
+            </div>
+            <div class="skill-card show-animate">
+                <h3><i class='bx bx-wrench'></i> Outils</h3>
+                <ul>
+                    <li>Git & GitHub</li>
+                    <li>Docker</li>
+                    <li>Linux Env.</li>
+                    <li>Trello</li>
+                    <li>Odoo</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <h2 class="heading reveal-on-scroll">Projets & <span>Réalisations</span></h2>
+        
+        <div class="project-grid reveal-on-scroll">
+    
+            <!-- PROJET 1 : GED -->
+            <div class="project-card show-animate">
+                <div class="card-image-slider">
+                    <div class="image-track">
+                        <img src="{% static 'apk/images/ged1.PNG' %}" alt="GED Application">
+                        <img src="{% static 'apk/images/ged2.PNG' %}" alt="Gestion">
+                        <img src="{% static 'apk/images/ged3.PNG' %}" alt="BDD">
+                        <img src="{% static 'apk/images/ged4.PNG' %}" alt="GED Application">
+                        <img src="{% static 'apk/images/ged5.PNG' %}" alt="GED Application">
+                        <img src="{% static 'apk/images/ged6.PNG' %}" alt="GED Application">
+                    </div>
+                </div>
+                <div class="project-content">
+                    <h3>GED – Gestion Électronique de Documents</h3>
+                    <p class="project-desc">
+                        Projet académique de l’ESTI visant la conception d’un 
+                        <span class="highlight">système de gestion électronique de documents intelligent</span>.
+                        La plateforme permet l’organisation, le stockage et la recherche avancée des fichiers
+                        universitaires grâce à des fonctionnalités d’
+                        <span class="highlight">intelligence artificielle</span> telles que 
+                        <span class="tech">OCR</span>,
+                        <span class="tech">Face-Id</span>, 
+                        <span class="tech">chatbot vocal</span> et 
+                        <span class="tech">recherche intelligente</span>.
+                        L’application repose sur une architecture robuste avec 
+                        <span class="highlight">Django</span>, offrant une interface moderne et une logique backend fiable.
+                    </p>
+                    
+                    <a href="https://github.com/aro310/GED" target="_blank" style="color:var(--main-color); font-weight:600;">
+                        Voir le code <i class='bx bx-right-arrow-alt'></i>
+                    </a>
+                </div>
+            </div>
+    
+            <!-- PROJET 2 : LOCAR -->
+            <div class="project-card show-animate">
+                <div class="card-image-slider">
+                    <div class="image-track" style="animation-direction: reverse;">
+                        <img src="{% static 'apk/images/rental.png' %}" alt="Locar">
+                        <img src="{% static 'apk/images/rental5.png' %}" alt="Locar">
+                        <img src="{% static 'apk/images/rental3.png' %}" alt="Locar">
+                        <img src="{% static 'apk/images/rental2.png' %}" alt="Locar">
+                    </div>
+                </div>
+                <div class="project-content">
+                    <h3>LOCAR – Application de location</h3>
+                    <p class="project-desc">
+                        Application web dédiée à la 
+                        <span class="highlight">gestion de location de véhicules</span>,
+                        intégrant la réservation automatisée, la gestion des clients,
+                        la facturation et le suivi des contrats en temps réel.
+                        Le projet met l’accent sur la simplicité d’utilisation et l’efficacité,
+                        avec un backend développé en 
+                        <span class="highlight">Flask</span> et une structure pensée pour l’évolutivité.
+                    </p>
+                    
+                    <a href="https://github.com/aro310/locar" target="_blank" style="color:var(--main-color); font-weight:600;">
+                        Voir le code <i class='bx bx-right-arrow-alt'></i>
+                    </a>
+                </div>
+            </div>
+    
+            <!-- PROJET 3 : AVATAR -->
+            <div class="project-card show-animate">
+                <div class="card-image-slider">
+                    <div class="image-track" style="animation-duration: 20s;">
+                        <img src="{% static 'apk/images/avatar1.png' %}" alt="Avatar">
+                        <img src="{% static 'apk/images/avatar2.png' %}" alt="IA">
+                        <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=60" alt="Expérimental">
+                        <img src="https://images.unsplash.com/photo-1531297461136-82lw85d89193?auto=format&fit=crop&w=800&q=60" alt="Avatar">
+                    </div>
+                </div>
+                <div class="project-content">
+                    <h3>AVATARO – Projet presonnel avec un Avatar interactif</h3>
+                    <p class="project-desc">
+                        Projet personnel expérimental centré sur la création d’un 
+                        <span class="highlight">avatar interactif intelligent</span>.
+                        L’objectif est de permettre à l’avatar de communiquer de manière naturelle
+                        via la voix et le texte en s’appuyant sur plusieurs API d’IA, notamment 
+                        <span class="highlight">Gemini</span>.
+                        L’interface est développée avec 
+                        <span class="tech">React (Vite)</span> tandis que le backend repose sur 
+                        <span class="tech">Flask</span>,
+                        offrant une interaction fluide et immersive.
+                    </p>
+                    
+                    <a href="https://github.com/aro310/avatar" target="_blank" style="color:var(--main-color); font-weight:600;">
+                        Voir le code <i class='bx bx-right-arrow-alt'></i>
+                    </a>
+                </div>
+            </div>
+    
+        </div>
+    </section>
+    
+
+    <section class="contact" id="contact">
+        <h2 class="heading reveal-on-scroll"><span>Contact</span></h2>
+        <div class="contact-info reveal-on-scroll show-animate">
+            <p><i class='bx bx-phone'></i> +261 34 54 125 84</p>
+            <p><i class='bx bx-envelope'></i> <a href="mailto:aroratovoharison@gmail.com">aroratovoharison@gmail.com</a></p>
+            <p><i class='bx bx-map'></i> Antananarivo, Madagascar</p>
+            <div style="margin-top: 2rem;">
+                <a href="https://github.com/aro310" target="_blank" style="font-size: 2rem; margin: 0 10px;"><i class='bx bxl-github'></i></a>
+                <a href="https://linkedin.com/in/aro-fortunat-ratovoharison-b63308366" style="font-size: 2rem; margin: 0 10px;"><i class='bx bxl-linkedin'></i></a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- 1. PARTICULES (Optimisé) ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particlesArray = [];
+        const numberOfParticles = 70;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 171, 240, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                // Liens entre particules proches
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(0, 171, 240, ' + (1 - distance / 100) * 0.2 + ')';
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 2. TYPEWRITER EFFECT ---
+        const texts = [
+        "Développeur Full-Stack Junior",
+        "Développeur Python",
+        "Créateur d’applications web & desktop modernes"
+    ];
+
+    const element = document.getElementById("typed");
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeWriter() {
+        const currentText = texts[textIndex];
+
+        if (!isDeleting) {
+            element.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+        } else {
+            element.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+        }
+
+        let speed = isDeleting ? 100 : 200;
+
+        // Quand le texte est complètement écrit
+        if (!isDeleting && charIndex === currentText.length) {
+            speed = 6000; // pause
+            isDeleting = true;
+        }
+
+        // Quand le texte est complètement effacé
+        if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            textIndex = (textIndex + 1) % texts.length;
+            speed = 500;
+        }
+
+        setTimeout(typeWriter, speed);
+    }
+
+    typeWriter();
+
+
+        // --- 3. SCROLL REVEAL & NAVBAR ACTIVE ---
+        let sections = document.querySelectorAll('section');
+        let navLinks = document.querySelectorAll('header nav a');
+        let revealElements = document.querySelectorAll('.reveal-on-scroll');
+        let countersActivated = false;
+        let statsSection = document.querySelector('.stats-section');
+
+        window.onscroll = () => {
+            let top = window.scrollY;
+
+            // Active Navbar Link
+            sections.forEach(sec => {
+                let offset = sec.offsetTop - 150;
+                let height = sec.offsetHeight;
+                let id = sec.getAttribute('id');
+
+                if(top >= offset && top < offset + height) {
+                    navLinks.forEach(links => {
+                        links.classList.remove('active');
+                        document.querySelector('header nav a[href*=' + id + ']').classList.add('active');
+                    });
+                }
+            });
+
+            // Sticky Header
+            let header = document.querySelector('header');
+            header.classList.toggle('sticky', top > 100);
+
+            // Reveal Animation
+            revealElements.forEach(el => {
+                let windowHeight = window.innerHeight;
+                let elementTop = el.getBoundingClientRect().top;
+                let elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    el.classList.add('show-animate');
+                }
+            });
+
+            // Counters Activation
+            if (statsSection.getBoundingClientRect().top < window.innerHeight && !countersActivated) {
+                const counters = document.querySelectorAll('.counter');
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const increment = target / 50;
+                    let count = 0;
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) {
+                            counter.innerText = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.innerText = Math.ceil(count);
+                        }
+                    }, 40);
+                });
+                countersActivated = true;
+            }
+        };
+
+        window.onload = () => {
+            typeWriter();
+        }
+    </script>
+</body>
+</html>
